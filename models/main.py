@@ -30,8 +30,8 @@ class IrisInput(BaseModel):
     petal_width: float = Field(gt=0)
 
 def create_app(
-        model_loader: Callable=load_mlflow_model,
-        version_loader: Callable=None):
+        model_loader: Callable = load_mlflow_model,
+        version_loader: Callable = None):
 
     if version_loader is None:
         def version_loader():
@@ -45,7 +45,7 @@ def create_app(
             return champion_version.version
 
     @asynccontextmanager
-    def lifespan(app:FastAPI):
+    async def lifespan(app: FastAPI):
         try:
             app.state.model = model_loader()
         except Exception as ex:
@@ -62,7 +62,7 @@ def create_app(
         version="3.0.0",
         lifespan=lifespan
     )
-        
+
     @app.get("/")
     def ready_to_serve():
         return {"status": "Ready to serve"}
@@ -73,7 +73,7 @@ def create_app(
             "status": "healthy",
             "model_name": "iris-classification",
             "model_version": app.state.model_version
-            }
+        }
 
     # Endpoint for making predictions with the Iris Random Forest model
     @app.post("/predict")
@@ -86,11 +86,13 @@ def create_app(
             data.petal_width
         ]]
         prediction = int(model.predict(features)[0])
-        print("Prediction is",prediction)
+        print("Prediction is", prediction)
         return {
             "prediction": prediction,
             "class_name": ["setosa", "versicolor", "virginica"][prediction]
         }
+
+    return app
 
 
 # Production application instance
