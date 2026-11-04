@@ -1,6 +1,8 @@
-fastapi
-uvicorn
 scikit-learn
 joblib
-pytest
+fastapi
+uvicorn
+pydantic
 httpx
+pytest
+mlflow
