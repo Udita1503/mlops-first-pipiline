@@ -95,4 +95,5 @@ def create_app(
     return app
 
 
-app = create_app()
+# Production application instance
+# app = create_app()
